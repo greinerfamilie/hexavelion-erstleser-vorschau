@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>06 Erstleser Anmeldung</title>
+<style>
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#000;
+  font-family:Georgia,"Times New Roman",serif;
+}
+#viewport{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  background:#000;
+}
+#stage{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:1792px;
+  height:854px;
+  transform-origin:center center;
+}
+#background{
+  position:absolute;
+  inset:0;
+  width:1792px;
+  height:854px;
+  display:block;
+  user-select:none;
+  -webkit-user-drag:none;
+}
+
+/* --------------------------------------------------------
+   Zurück-Zettel als echte transparente Schablone
+   -------------------------------------------------------- */
+#back{
+  position:absolute;
+  left:1517px;
+  top:330px;
+  width:258px;
+  height:150px;
+  z-index:40;
+  display:block;
+  border:0;
+  outline:0;
+  background:transparent;
+  text-decoration:none;
+  cursor:pointer;
+}
+#back img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+  pointer-events:none;
+  border:0;
+  outline:0;
+  box-shadow:none;
+  transition:filter .10s ease-out;
+}
+#back:hover img,
+#back:focus-visible img{
+  filter:
+    brightness(1.38)
+    saturate(1.30)
+    drop-shadow(0 0 1px rgba(255,252,221,1))
+    drop-shadow(0 0 2px rgba(255,205,74,1))
+    drop-shadow(0 0 3px rgba(255,155,28,1));
+}
+#back:focus,
+#back:focus-visible{
+  outline:0;
+  box-shadow:none;
+}
+
+/* --------------------------------------------------------
+   Formularfelder
+   -------------------------------------------------------- */
+.label{
+  position:absolute;
+  z-index:20;
+  font-size:18px;
+  font-weight:bold;
+  color:#382515;
+}
+
+.field{
+  position:absolute;
+  z-index:20;
+  box-sizing:border-box;
+  width:415px;
+  height:42px;
+  padding:0 44px 0 44px;
+  font:18px Georgia,"Times New Roman",serif;
+  color:#4b3927;
+  background:rgba(250,241,221,.97);
+  border:1px solid rgba(126,92,54,.76);
+  border-radius:7px;
+  outline:none;
+  box-shadow:
+    inset 0 1px 4px rgba(66,39,18,.14),
+    0 1px 2px rgba(52,30,13,.13);
+}
+.field::placeholder{
+  color:#8b755e;
+  opacity:.92;
+}
+.field:focus{
+  border-color:#9a6520;
+  box-shadow:
+    0 0 0 2px rgba(184,126,41,.20),
+    inset 0 1px 4px rgba(66,39,18,.14);
+}
+
+.icon{
+  position:absolute;
+  z-index:25;
+  width:30px;
+  height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#5d4934;
+  font-size:17px;
+  pointer-events:none;
+}
+
+.eye{
+  position:absolute;
+  z-index:26;
+  width:38px;
+  height:38px;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:#5d4934;
+  font-size:18px;
+  cursor:pointer;
+  padding:0;
+}
+
+/* linke Seite */
+#label-reg-email{left:425px;top:452px}
+#reg-email{left:425px;top:477px}
+#icon-reg-email{left:432px;top:477px}
+
+#label-reg-pass{left:425px;top:526px}
+#reg-pass{left:425px;top:551px}
+#icon-reg-pass{left:432px;top:551px}
+#eye-reg1{left:797px;top:553px}
+
+#label-reg-pass2{left:425px;top:600px}
+#reg-pass2{left:425px;top:625px}
+#icon-reg-pass2{left:432px;top:625px}
+#eye-reg2{left:797px;top:627px}
+
+/* rechte Seite */
+#label-login-email{left:1047px;top:451px}
+#login-email{left:1047px;top:476px}
+#icon-login-email{left:1054px;top:476px}
+
+#label-login-pass{left:1047px;top:525px}
+#login-pass{left:1047px;top:550px}
+#icon-login-pass{left:1054px;top:550px}
+#eye-login{left:1419px;top:552px}
+
+/* Checkboxen */
+.checkrow{
+  position:absolute;
+  z-index:24;
+  display:flex;
+  align-items:flex-start;
+  gap:9px;
+  color:#382515;
+  font-size:17px;
+  line-height:1.25;
+}
+.checkrow input{
+  width:18px;
+  height:18px;
+  margin:1px 0 0 0;
+  accent-color:#76501f;
+  cursor:pointer;
+}
+#privacy-row{left:425px;top:684px}
+#remember-row{left:1047px;top:618px}
+#login-newsletter-row{left:1047px;top:645px;width:415px}
+
+#privacy-link,
+#forgot-link{
+  color:#0b5f9e;
+  text-decoration:underline;
+}
+
+/* Buttons */
+.action{
+  position:absolute;
+  z-index:28;
+  height:56px;
+  border-radius:8px;
+  border:2px solid #b47b24;
+  color:#f8f0dd;
+  font:bold 22px Georgia,"Times New Roman",serif;
+  cursor:pointer;
+  background:
+    linear-gradient(to bottom,#083c82 0%,#06285f 48%,#031c4b 100%);
+  box-shadow:
+    inset 0 0 0 2px rgba(255,214,104,.25),
+    0 2px 6px rgba(0,0,0,.35);
+}
+.action:hover,
+.action:focus-visible{
+  filter:brightness(1.18);
+  outline:none;
+}
+#register-btn{left:425px;top:723px;width:415px}
+#login-btn{left:1047px;top:666px;width:415px}
+
+#forgot-link{
+  position:absolute;
+  left:1165px;
+  top:735px;
+  z-index:28;
+  font-size:17px;
+}
+
+.status{
+  position:absolute;
+  z-index:50;
+  display:none;
+  box-sizing:border-box;
+  padding:7px 11px;
+  background:rgba(249,234,201,.97);
+  border:1px solid #9d7642;
+  border-radius:6px;
+  color:#4a2d12;
+  font-size:15px;
+}
+#reg-status{left:425px;top:782px;width:415px}
+#login-status{left:1047px;top:777px;width:415px}
+
+
+#reader-test-bypass{
+  position:absolute;
+  left:689px;
+  top:785px;
+  width:414px;
+  height:50px;
+  z-index:70;
+  border:2px solid #7d5426;
+  border-radius:999px;
+  background:#f1d68d;
+  color:#682517;
+  font:700 18px Georgia,"Times New Roman",serif;
+  cursor:pointer;
+  box-shadow:0 3px 8px rgba(0,0,0,.25);
+}
+#reader-test-bypass:hover{filter:brightness(1.06)}
+
+</style>
+<style id="hx-oleo-v155">
+/* V1.00.155 – einheitliche Schrift, lokal beim Build eingebunden. */
+@font-face{font-family:"Oleo Script Swash Caps";font-style:normal;font-weight:400;font-display:swap;src:url("/fonts/oleo-script-swash-caps-latin-400-normal.woff2") format("woff2")}
+@font-face{font-family:"Oleo Script Swash Caps";font-style:normal;font-weight:700;font-display:swap;src:url("/fonts/oleo-script-swash-caps-latin-700-normal.woff2") format("woff2")}
+/* Die vorhandenen Größen von Schaltflächen, Formularlabels und Infotexten bleiben erhalten.
+   Nur die Schriftfamilie wird überall einheitlich ersetzt. */
+:root body :is(#hx-oleo-all-text, *){font-family:"Oleo Script Swash Caps",Georgia,serif!important}
+</style>
+</head>
+<body>
+<div id="viewport">
+<div id="stage">
+<img alt="Erstleser Anmeldung" id="background" src="assets/originalgrafik_045.webp"/>
+<a aria-label="Zurück zur Startseite" href="#" id="back" title="Zurück zur Startseite">
+<img alt="Zurück zur Startseite" src="assets/originalgrafik_046.webp"/>
+</a>
+<form autocomplete="off" id="register-form">
+<label class="label" for="reg-email" id="label-reg-email">E-Mail-Adresse</label>
+<span class="icon" id="icon-reg-email">✉</span>
+<input autocomplete="email" class="field" id="reg-email" placeholder="E-Mail-Adresse eingeben" required="" type="email"/>
+<label class="label" for="reg-pass" id="label-reg-pass">Kennwort</label>
+<span class="icon" id="icon-reg-pass">▣</span>
+<input autocomplete="new-password" class="field" id="reg-pass" minlength="8" placeholder="Kennwort eingeben" required="" type="password"/>
+<button aria-label="Kennwort anzeigen" class="eye" id="eye-reg1" type="button">◉</button>
+<label class="label" for="reg-pass2" id="label-reg-pass2">Kennwort wiederholen</label>
+<span class="icon" id="icon-reg-pass2">▣</span>
+<input autocomplete="new-password" class="field" id="reg-pass2" minlength="8" placeholder="Kennwort wiederholen" required="" type="password"/>
+<button aria-label="Kennwort anzeigen" class="eye" id="eye-reg2" type="button">◉</button>
+<label class="checkrow" id="privacy-row">
+<input id="privacy" required="" type="checkbox"/>
+<span>Ich akzeptiere die <a href="#" id="privacy-link">Datenschutzerklärung</a></span>
+</label>
+<button class="action" id="register-btn" type="submit" style="font-size:19px">Registrierung nur mit Einladung</button>
+<div class="status" id="reg-status" role="status"></div>
+</form>
+<form autocomplete="off" id="login-form">
+<label class="label" for="login-email" id="label-login-email">E-Mail-Adresse</label>
+<span class="icon" id="icon-login-email">✉</span>
+<input autocomplete="email" class="field" id="login-email" placeholder="E-Mail-Adresse eingeben" required="" type="email"/>
+<label class="label" for="login-pass" id="label-login-pass">Kennwort</label>
+<span class="icon" id="icon-login-pass">▣</span>
+<input autocomplete="current-password" class="field" id="login-pass" placeholder="Kennwort eingeben" required="" type="password"/>
+<button aria-label="Kennwort anzeigen" class="eye" id="eye-login" type="button">◉</button>
+<label class="checkrow" id="remember-row">
+<input id="remember" type="checkbox"/>
+<span>Angemeldet bleiben</span>
+</label>
+<label class="checkrow" id="login-newsletter-row">
+<input id="login-newsletter" type="checkbox"/>
+<span>Erstleser-Newsletter erhalten (optional)</span>
+</label>
+<button class="action" id="login-btn" type="submit">Anmelden</button>
+<a href="#" id="forgot-link">Kennwort vergessen?</a>
+<div class="status" id="login-status" role="status"></div>
+</form>
+</div>
+</div>
+<script>
+function fitStage(){
+  const scale=Math.min(window.innerWidth/1792,window.innerHeight/854);
+  document.getElementById('stage').style.transform=
+    'translate(-50%,-50%) scale('+scale+')';
+}
+window.addEventListener('resize',fitStage);
+fitStage();
+
+function togglePassword(id,button){
+  const field=document.getElementById(id);
+  const visible=field.type==='text';
+  field.type=visible?'password':'text';
+  button.textContent=visible?'◉':'◎';
+}
+
+document.getElementById('eye-reg1').onclick=function(){
+  togglePassword('reg-pass',this);
+};
+document.getElementById('eye-reg2').onclick=function(){
+  togglePassword('reg-pass2',this);
+};
+document.getElementById('eye-login').onclick=function(){
+  togglePassword('login-pass',this);
+};
+
+function showStatus(id,text){
+  const el=document.getElementById(id);
+  el.textContent=text;
+  el.style.display='block';
+}
+
+document.getElementById('back').addEventListener('click',function(e){
+  e.preventDefault();
+  if(window.parent && typeof window.parent.showStart==='function'){
+    window.parent.showStart();
+  } else if(history.length>1){
+    history.back();
+  }
+});
+
+document.getElementById('privacy-link').addEventListener('click',function(e){
+  e.preventDefault();
+  if(window.parent && typeof window.parent.showPrivacyPolicy==='function'){
+    window.parent.showPrivacyPolicy();
+  } else {
+    alert('Die Datenschutzerklärung konnte nicht geöffnet werden.');
+  }
+});
+
+document.getElementById('forgot-link').addEventListener('click',async function(e){
+  e.preventDefault();
+  const email=document.getElementById('login-email').value.trim();
+  if(!email){showStatus('login-status','Bitte zuerst deine E-Mail-Adresse eingeben.');return;}
+  try{
+    if(!window.parent||typeof window.parent.hxIdentityAction!=='function')throw Error('Identity-Verbindung nicht erreichbar.');
+    const result=await window.parent.hxIdentityAction('recover',{email});
+    showStatus('login-status',result?.message||'Das Zurücksetzen ist nicht verfügbar.');
+  }catch(_){showStatus('login-status','Kennwort-Wiederherstellung derzeit nicht erreichbar.');}
+});
+
+// Netlify Identity: Passwoerter niemals lokal speichern oder eine erfolgreiche Anmeldung vortaeuschen.
+document.getElementById('register-form').addEventListener('submit',async function(e){
+  e.preventDefault();
+  const email=document.getElementById('reg-email').value.trim();
+  const password=document.getElementById('reg-pass').value;
+  if(password!==document.getElementById('reg-pass2').value){
+    showStatus('reg-status','Die beiden Kennwörter stimmen nicht überein.');
+    return;
+  }
+  if(!window.parent || typeof window.parent.hxIdentityAction!=='function'){
+    showStatus('reg-status','Identity-Verbindung noch nicht bereit. Keine Registrierung vorgenommen.');
+    return;
+  }
+  const button=document.getElementById('register-btn');
+  button.disabled=true;
+  try{
+    const result=await window.parent.hxIdentityAction('register',{email,password,round:'first'});
+    showStatus('reg-status',result.message||'Registrierung konnte nicht abgeschlossen werden.');
+    if(result.ok){document.getElementById('reg-pass').value='';document.getElementById('reg-pass2').value='';}
+  }catch(_){showStatus('reg-status','Registrierung momentan nicht erreichbar.');}
+  finally{button.disabled=false;}
+});
+document.getElementById('login-form').addEventListener('submit',async function(e){
+  e.preventDefault();
+  if(!window.parent || typeof window.parent.hxIdentityAction!=='function'){
+    showStatus('login-status','Identity-Verbindung noch nicht bereit. Keine Anmeldung vorgenommen.');
+    return;
+  }
+  const button=document.getElementById('login-btn');
+  button.disabled=true;
+  try{
+    const result=await window.parent.hxIdentityAction('login',{
+      email:document.getElementById('login-email').value.trim(),
+      password:document.getElementById('login-pass').value,
+      round:'first'
+    });
+    if(result.ok){
+      document.getElementById('login-pass').value='';
+      try{localStorage.setItem('erstleserNewsletter',document.getElementById('login-newsletter').checked?'true':'false');}catch(_){}
+      const follow=await window.parent.hxContinueAfterReaderLogin('first');
+      if(!follow?.ok)showStatus('login-status',follow?.message||'Fortsetzung derzeit nicht erreichbar.');
+    } else showStatus('login-status',result.message||'Anmeldung nicht möglich.');
+  }catch(_){showStatus('login-status','Anmeldung momentan nicht erreichbar.');}
+  finally{button.disabled=false;}
+});
+
+
+</script>
+<script id="hx-v334-static-only">
+(function(){
+  for(const f of [document.getElementById('register-form'),document.getElementById('login-form')]){
+    if(!f)continue;
+    f.addEventListener('submit',function(ev){ev.preventDefault();ev.stopImmediatePropagation();},true);
+    f.querySelectorAll('input,button').forEach(el=>{el.disabled=true;el.setAttribute('aria-disabled','true')});
+  }
+})();
+</script></body>
+</html>

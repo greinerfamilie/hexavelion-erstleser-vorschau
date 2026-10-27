@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Erstleser – So läuft die Leserunde ab</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;font-family:Georgia,"Times New Roman",serif;color:#3b2818}
+#viewport{position:fixed;inset:0;overflow:hidden;background:#000}
+#stage{position:absolute;left:50%;top:50%;width:1792px;height:854px;transform-origin:center center}
+#background{position:absolute;inset:0;width:1792px;height:854px;object-fit:fill;display:block;user-select:none;-webkit-user-drag:none}
+#reader-flow{position:absolute;left:50%;top:0;width:1349px;height:540px;transform:translateX(-50%);object-fit:contain;display:block;z-index:10;pointer-events:none;user-select:none;-webkit-user-drag:none;filter:contrast(1.08) saturate(1.03)}
+#info-panel{position:absolute;left:265px;top:510px;width:1272px;height:260px;z-index:20;padding:14px 26px 12px;background:rgba(255,248,230,.80);border:1px solid rgba(120,77,34,.42);border-radius:18px;box-shadow:inset 0 0 16px rgba(103,62,24,.10)}
+#info-panel h2{margin:0 0 3px;text-align:center;font-size:29px;color:#3a2718}
+#info-panel .lead{margin:0 auto 7px;max-width:980px;text-align:center;font-size:16px;line-height:1.2;color:#5a3c21}
+#criteria{display:grid;grid-template-columns:1fr 1fr;column-gap:24px;row-gap:5px;max-width:1048px;margin:0 auto 10px;padding:0;list-style:none;counter-reset:item}
+#criteria li{counter-increment:item;position:relative;padding:5px 11px 5px 42px;min-height:34px;border:1px solid rgba(117,77,37,.24);border-radius:8px;background:rgba(255,250,229,.42);font-size:16px;line-height:1.22}
+#criteria li::before{content:counter(item);position:absolute;left:9px;top:4px;width:25px;height:25px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#3f2818;color:#f7e7bd;font-weight:700;font-size:14px}
+#personal-note{margin:6px auto 0;max-width:1140px;text-align:center;font-size:17px;line-height:1.28;font-weight:700;color:#4b321d}
+#next{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);min-width:340px;height:48px;padding:0 28px;border:2px solid #77501f;border-radius:999px;background:linear-gradient(#48732e,#244b20);color:#fff2ce;font:700 18px Georgia,"Times New Roman",serif;cursor:pointer;box-shadow:inset 0 0 0 2px rgba(255,230,150,.18),0 4px 8px rgba(44,23,7,.24)}
+#next:hover,#next:focus-visible{outline:none;filter:brightness(1.12);box-shadow:0 0 3px rgba(255,244,193,.95),0 0 8px rgba(143,225,77,.72)}
+#back{position:absolute;left:78px;top:28px;z-index:30;padding:8px 16px;border:1px solid rgba(100,63,26,.45);border-radius:999px;background:rgba(247,230,189,.55);color:#442d19;font:700 15px Georgia,"Times New Roman",serif;cursor:pointer}
+
+#start-form{margin:0 auto;max-width:1160px}
+#start-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;margin:0 auto 8px;align-items:stretch}
+.start-field{padding:7px 10px;background:rgba(255,250,229,.54);border:1px solid rgba(113,74,36,.28);border-radius:9px}
+.start-field label{display:block;margin:0 0 4px;font-size:16px;font-weight:700;color:#3a2718}
+.start-field select{width:210px;height:34px;box-sizing:border-box;padding:4px 8px;border:1px solid #8a673e;border-radius:6px;background:#fff9e8;color:#2d2117;font:16px Georgia,"Times New Roman",serif}
+
+.start-field.full{grid-column:1/-1}
+.start-field.inline{display:flex;align-items:center;gap:10px;min-height:50px}
+.start-field.inline label{display:inline-block;margin:0;white-space:nowrap}
+.start-field.inline select{flex:1 1 auto;max-width:none}
+.start-checks{display:flex;flex-wrap:nowrap;align-items:center;justify-content:flex-start;gap:4px 11px;font-size:14px;min-height:30px}
+.start-checks label{display:flex;align-items:center;gap:4px;margin:0;font-weight:400;white-space:nowrap}
+.start-checks input{width:15px;height:15px;accent-color:#6f4a20}
+#start-actions{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:2px}
+#start-save,#start-skip{height:42px;padding:0 24px;border:2px solid #77501f;border-radius:999px;font:700 17px Georgia,"Times New Roman",serif;cursor:pointer}
+#start-save{background:linear-gradient(#48732e,#244b20);color:#fff2ce;box-shadow:inset 0 0 0 2px rgba(255,230,150,.18),0 4px 8px rgba(44,23,7,.24)}
+#start-skip{background:#c9a568;color:#322214}
+#start-save:hover,#start-save:focus-visible,#start-skip:hover,#start-skip:focus-visible{outline:none;filter:brightness(1.1)}
+#start-message{min-height:18px;margin-top:4px;text-align:center;font-weight:700;color:#496223}
+
+
+/* V1.00.086: ausschliesslich Erstleser-Startumfrage Seite 1 – Satisfy normal. */
+#info-panel{font-family:"Satisfy","Segoe Print",cursive!important;font-weight:400!important}
+#info-panel h2{font-family:"Satisfy","Segoe Print",cursive!important;font-weight:400!important;font-size:32px!important}
+#info-panel .lead{font-family:"Satisfy","Segoe Print",cursive!important;font-weight:400!important;font-size:19px!important}
+#start-fields .start-field label{font-family:"Satisfy","Segoe Print",cursive!important;font-weight:400!important;font-size:20px!important;line-height:1.1!important}
+#start-fields .start-checks label{font-family:"Satisfy","Segoe Print",cursive!important;font-weight:400!important;font-size:18px!important;line-height:1.1!important}
+#start-fields select{font:400 19px "Satisfy","Segoe Print",cursive!important}
+#info-panel #start-save,#info-panel #start-skip{font:400 21px "Satisfy","Segoe Print",cursive!important}
+#start-message{font-family:"Satisfy","Segoe Print",cursive!important;font-weight:400!important}
+
+</style>
+<style id="hx-oleo-v158-intro">
+/* Keine Layoutaenderung: nur einheitliche lokale Schrift. */
+@font-face{font-family:"Oleo Script Swash Caps";font-style:normal;font-weight:400;font-display:swap;src:url("/fonts/oleo-script-swash-caps-latin-400-normal.woff2") format("woff2")}
+@font-face{font-family:"Oleo Script Swash Caps";font-style:normal;font-weight:700;font-display:swap;src:url("/fonts/oleo-script-swash-caps-latin-700-normal.woff2") format("woff2")}
+html body,html body *{font-family:"Oleo Script Swash Caps",Georgia,serif!important}
+</style>
+<style id="hx-font-layout-v172">
+/* Bestätigte Buchschrift aus der lokalen Testfassung; keine Größen-/Positionsänderung. */
+html body #info-panel,html body #info-panel *{font-family:"Oleo Script Swash Caps",Georgia,serif!important;}
+</style>
+</head>
+<body>
+<div id="viewport"><div id="stage">
+<img id="background" src="assets/originalgrafik_049.webp" alt="">
+<button id="back" type="button">← Zurück</button>
+<img id="reader-flow" src="assets/originalgrafik_050.webp" alt="So läuft die Leserunde ab">
+<section id="info-panel" aria-label="Startumfrage">
+<h2>Die Startumfrage</h2>
+<p class="lead">Auf der ersten Seite möchten wir zunächst drei Dinge über dich wissen.</p>
+<form id="start-form" autocomplete="off">
+<div id="start-fields">
+<div class="start-field inline"><label for="intro-gender">1. Geschlecht</label><select id="intro-gender" name="gender"><option value="">Keine Angabe</option><option>Männlich</option><option>Weiblich</option><option>Divers</option></select></div>
+<div class="start-field inline"><label for="intro-age">2. Altersgruppe</label><select id="intro-age" name="age"><option value="">Keine Angabe</option><option>Unter 12</option><option>12–15</option><option>16–17</option><option>18–25</option><option>26–40</option><option>41–60</option><option>Über 60</option></select></div>
+<div class="start-field full"><label>3. Was liest du am liebsten?</label><div class="start-checks"><label><input name="genres" type="checkbox" value="Abenteuer">Abenteuer</label><label><input name="genres" type="checkbox" value="Spannung">Spannung</label><label><input name="genres" type="checkbox" value="Fantasy">Fantasy</label><label><input name="genres" type="checkbox" value="Humor">Humor</label><label><input name="genres" type="checkbox" value="Freundschaft">Freundschaft</label><label><input name="genres" type="checkbox" value="Alltag / Schule">Alltag / Schule</label><label><input name="genres" type="checkbox" value="Tiere">Tiere</label><label><input name="genres" type="checkbox" value="Krimi">Krimi</label><label><input name="genres" type="checkbox" value="Thriller">Thriller</label><label><input name="genres" type="checkbox" value="Sci-Fi">Sci-Fi</label><label><input name="genres" type="checkbox" value="Sonstiges">Sonstiges</label></div></div>
+</div>
+<div id="start-actions"><button id="start-save" type="submit">Weiter zur zweiten Seite</button></div>
+<div id="start-message" role="status"></div>
+</form>
+</section>
+</div></div>
+<script>
+function fitStage(){const s=Math.min(window.innerWidth/1792,window.innerHeight/854);document.getElementById('stage').style.transform='translate(-50%,-50%) scale('+s+')';}
+window.addEventListener('resize',fitStage);fitStage();
+const VERSION="V1.00.041";
+function ensureReaderId(){let id=localStorage.getItem('hexavelionReaderId');if(!id){id='R-'+(window.crypto&&crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+'-'+Math.random().toString(36).slice(2));localStorage.setItem('hexavelionReaderId',id);}return id;}
+function saveSubmission(rec){const k='hexavelionSurveySubmissionsV1';let arr=[];try{arr=JSON.parse(localStorage.getItem(k)||'[]');if(!Array.isArray(arr))arr=[];}catch(_){arr=[];}rec.id='S-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);rec.timestamp=new Date().toISOString();rec.version=VERSION;rec.readerId=ensureReaderId();arr.push(rec);localStorage.setItem(k,JSON.stringify(arr));return rec;}
+function goProlog(){try{localStorage.setItem('activeReaderMode','first');}catch(_){} if(window.parent&&window.parent!==window&&typeof window.parent.showProlog==='function')window.parent.showProlog();}
+document.getElementById('start-form').addEventListener('submit',function(e){e.preventDefault();const gender=document.getElementById('intro-gender').value;const age=document.getElementById('intro-age').value;const genres=[...document.querySelectorAll('#start-form [name="genres"]:checked')].map(x=>x.value);const step1={gender,age,genres};try{localStorage.setItem('erstleserStartStep1',JSON.stringify(step1));}catch(_){}document.getElementById('start-message').textContent='Erste Seite gespeichert.';setTimeout(()=>{try{if(window.parent&&window.parent!==window&&typeof window.parent.showReaderSurveyForm==='function'){window.parent.showReaderSurveyForm(step1);return;}}catch(_){}},120);});
+document.getElementById('start-skip').addEventListener('click',goProlog);
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer">
+<title>Das Experiment der Götter – Erstleser-Ansicht (Vorschau V334)</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#1d1815;color:#f8e8c4;font-family:Georgia,serif}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;max-width:1500px;margin:auto;padding:14px 16px 8px}
+h1{font-size:clamp(20px,3.5vw,29px);font-weight:400;margin:0}header small{font:700 12px system-ui,sans-serif;color:#f4dba8}
+main{margin:0 auto;max-width:1500px;padding:0 16px 12px}
+.note{margin:8px 0 12px;padding:10px 14px;border-left:4px solid #bb934c;background:#f7e7c5;color:#4b321d;border-radius:5px;font:14px/1.45 system-ui,sans-serif}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}button{border:1px solid #d6b671;background:#f4dcab;color:#402812;padding:11px 14px;border-radius:7px;font:700 14px Georgia,serif;cursor:pointer}button.active{background:#214f78;color:#fff8e7}button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+#view{width:100%;height:min(76vw,760px);min-height:350px;border:2px solid #b78d52;border-radius:8px;background:#000}
+#placeholder{display:none;background:#f3e1bb;color:#3a2815;min-height:400px;padding:26px;border:6px ridge #996a35;border-radius:12px;text-align:center}
+#placeholder h2{font-size:32px}#placeholder p{font:18px/1.5 Georgia,serif;max-width:780px;margin:14px auto}
+footer{padding:4px 16px 24px;margin:0 auto;max-width:1500px;font:13px/1.6 system-ui,sans-serif;color:#e6c993}
+@media(max-width:580px){main{padding:0 7px 12px}#view{height:67vh;min-height:250px}.note{font-size:12px}button{font-size:13px;padding:9px}}
+</style></head><body>
+<header><h1>Das Experiment der Götter · Erstleser-Vorschau</h1><small>GitHub-Testansicht V334 · KEIN LESERKONTO</small></header>
+<main>
+<div id="notice" class="note" role="status"><strong>Nur Layouttest:</strong> Die originale Netlify-Anmeldung ist erhalten, hier jedoch bewusst deaktiviert. Du kannst ohne Kennwort zur nächsten Seite weitergehen. Kein Buchtext wird veröffentlicht.</div>
+<nav aria-label="Ansicht auswählen"><button class="active" data-step="login">1 · Original-Anmeldung</button><button data-step="intro">2 · Ablauf / Willkommen</button><button data-step="survey">3 · Echte Tally-Startumfrage</button><button data-step="book">4 · Leseansicht ohne Buchtext</button><button id="next" type="button">Weiter zur nächsten Seite</button></nav>
+<iframe id="view" title="Originalansicht der Erstleser-Webseite" loading="eager" referrerpolicy="no-referrer"></iframe>
+<section id="placeholder" aria-live="polite"><h2>Lesebereich · geschützte Vorschau</h2><p>Die Leseroberfläche ist in der Arbeitsfassung erhalten. Der eigentliche Romantext, Prolog und Kapitel 1 werden hier absichtlich nicht ausgeliefert.</p><p><strong>Dies ist kein bestätigter Erstleserzugang.</strong> Die sichere Kapitel-Freigabe muss später mit Netlify Identity separat getestet werden.</p></section>
+</main>
+<footer>Die veröffentlichte Tally-Startumfrage ist echt. Werden Antworten abgesendet, können sie in Tally gespeichert werden, aber sie sind ohne Netlify-Identität <strong>unbestätigt und keinem Leser zugeordnet</strong>. Die Vorschau bestätigt keinen erfolgreichen Versand. Zum Überprüfen des Eingangs Tally öffnen und die Antwort mit der Versionskennung V1.00.334-GITHUB-VORSCHAU-UNBESTAETIGT suchen. Keine echten Leserzugangsdaten hier eingeben.</footer>
+<script>
+(function(){'use strict';
+ const buttons=[...document.querySelectorAll('[data-step]')],frame=document.getElementById('view'),placeholder=document.getElementById('placeholder'),notice=document.getElementById('notice');
+ const route={login:'login-originalansicht.html',intro:'ablauf-originalansicht.html',survey:'startumfrage-originalansicht-mit-tally.html'};
+ const notes={login:'Nur Layouttest: Die Netlify-Anmeldung ist in dieser GitHub-Vorschau gesperrt. Nutze den separaten Weiter-Button. Keine Kennwörter eingeben.',intro:'Originalansicht zum Ablauf der Erstleserrunde. Zur echten Tally-Umfrage führt der nächste Schritt.',survey:'ECHTES TALLY-FORMULAR: Ein Absenden kann eine reale, aber UNBESTÄTIGTE Testantwort speichern. Die Zuordnung zu Netlify-Lesern und die automatische Abschlussprüfung sind hier nicht möglich.',book:'Geschützte Buchvorschau ohne Romantext. Dies ist kein bestätigter Zugang.'};
+ const order=['login','intro','survey','book'];let step='login';
+ function go(n){if(!Object.hasOwn(notes,n))return;step=n;for(const b of buttons)b.classList.toggle('active',b.dataset.step===step);notice.innerHTML='<strong>'+({login:'Original-Anmeldung:',intro:'Original-Ablauf:',survey:'Tally LIVE, unbestätigt:',book:'Geschützter Lesebereich:'}[n])+'</strong> '+notes[n];if(n==='book'){frame.hidden=true;frame.removeAttribute('src');placeholder.style.display='block';}else{placeholder.style.display='none';frame.hidden=false;frame.src=route[n];}}
+ buttons.forEach(b=>b.addEventListener('click',()=>go(b.dataset.step)));
+ document.getElementById('next').addEventListener('click',()=>go(order[Math.min(order.indexOf(step)+1,3)]));
+ window.showReaderSurveyForm=()=>go('survey');window.showProlog=()=>go('book');window.showPlaceholder=()=>go('book');window.showStart=()=>go('login');
+ go('login');
+})();
+</script></body></html>

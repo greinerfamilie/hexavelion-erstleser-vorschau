@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>07 Erstleser – Startumfrage</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;font-family:Georgia,"Times New Roman",serif;color:#3c291a}
+#viewport{position:fixed;inset:0;overflow:hidden;background:#000}
+#stage{position:absolute;left:50%;top:50%;width:1792px;height:854px;transform-origin:center center}
+#background{position:absolute;inset:0;width:1792px;height:854px;display:block;user-select:none;-webkit-user-drag:none}
+#reader-round{display:none!important}
+#back-book{display:none!important}
+#back-book img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none;-webkit-user-drag:none;opacity:1}
+#back-book:hover img,#back-book:focus-visible img{filter:none;transform:none}
+#back-book:focus-visible{outline:none}
+#survey{position:absolute;inset:0;z-index:30}
+.q{position:absolute;font-size:15px;line-height:1.2}
+.qtitle{display:block;font-weight:bold;font-size:16px;line-height:1.2;margin-bottom:7px}
+.required{color:#a81f16}
+small{font-size:13px;font-weight:normal}
+select,textarea{width:100%;font:15px Georgia,"Times New Roman",serif;color:#3a281a;background:rgba(255,250,237,.92);border:1px solid rgba(132,96,52,.70);border-radius:5px;padding:7px 9px;outline:none;box-shadow:inset 0 1px 2px rgba(90,58,28,.10)}
+select:focus,textarea:focus{border-color:#97631f;box-shadow:0 0 0 2px rgba(193,135,47,.18)}
+textarea{resize:none}
+.options{display:grid;gap:4px 12px}
+.two{grid-template-columns:1fr 1fr}
+.one{grid-template-columns:1fr}.important-grid{column-gap:16px;row-gap:4px}
+.choice{display:flex;align-items:center;gap:7px;min-height:19px;cursor:pointer;white-space:nowrap}
+.choice input{width:15px;height:15px;margin:0;accent-color:#6f4a20;cursor:pointer}
+#q1{left:354px;top:446px;width:350px}
+#q2{left:354px;top:510px;width:350px}
+#q3{left:354px;top:600px;width:352px}
+#q4{left:756px;top:446px;width:356px}
+#q5{left:756px;top:627px;width:356px}
+#q6{left:1155px;top:446px;width:341px}
+#q7{left:1155px;top:565px;width:341px}
+#age{height:33px}
+#similar{height:58px}
+#expectation{height:72px}
+#wishes{height:62px}
+#submit{position:absolute;left:1155px;top:704px;width:341px;height:60px;border:2px solid #c39742;border-radius:9px;font:bold 18px Georgia,"Times New Roman",serif;color:#fff2cc;background:linear-gradient(#365f27,#183b17);cursor:pointer;box-shadow:inset 0 0 0 2px rgba(255,226,136,.17),0 2px 6px rgba(0,0,0,.24)}
+#submit:hover,#submit:focus-visible{outline:none;filter:brightness(1.16);box-shadow:0 0 3px rgba(255,244,193,.95),0 0 7px rgba(143,225,77,.75)}
+#success{position:absolute;inset:0;z-index:90;display:none;align-items:center;justify-content:center;background:rgba(34,20,9,.58)}
+#successbox{width:610px;padding:28px 34px;text-align:center;background:linear-gradient(#f3ddb0,#e2bf7e);border:2px solid #9e6b2a;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.42)}
+#successbox h2{margin:0 0 10px;font-size:29px}
+#successbox p{font-size:18px;line-height:1.35;margin:0 0 18px}
+#prolog-btn{min-width:260px;height:52px;border:2px solid #b78731;border-radius:9px;color:#fff3d0;background:linear-gradient(#386229,#183c17);font:bold 19px Georgia,"Times New Roman",serif;cursor:pointer}
+
+
+.tally-survey-host{
+  position:absolute!important;left:330px!important;top:490px!important;width:1130px!important;height:350px!important;
+  overflow:hidden!important;padding:0!important;margin:0!important;background:rgba(255,248,224,.18)!important;
+  border-radius:10px!important;
+}
+#tally-local-intro{display:none!important;}
+#tally-start-frame{display:block;width:100%;height:245px;border:0;background:transparent;}
+#tally-prolog-btn{
+  display:block;margin:7px auto 0;padding:8px 28px;height:45px;border:2px solid #6d4a20;border-radius:999px;
+  background:#8e6a2e;color:#fff7df;font:700 17px Georgia,"Times New Roman",serif;cursor:pointer;
+}
+
+
+
+#test-mode-note{box-sizing:border-box;margin:0 0 6px;padding:6px 10px;text-align:center;font:700 15px Georgia,"Times New Roman",serif;color:#6b1f12;background:rgba(255,236,176,.92);border:1px solid #a46c22;border-radius:7px;}
+
+
+
+.local-survey-host{position:absolute!important;left:238px!important;top:130px!important;width:1316px!important;height:628px!important;z-index:35!important;box-sizing:border-box!important;padding:18px 24px 18px!important;overflow:auto!important;background:rgba(252,244,223,.78)!important;border:1px solid rgba(112,72,34,.42)!important;border-radius:18px!important;box-shadow:inset 0 0 16px rgba(109,69,24,.10)!important;color:#372516!important;font-family:Georgia,"Times New Roman",serif!important}
+.local-survey-host h3{margin:4px 0 12px;text-align:center;font-size:31px;color:#3c2817}
+.local-survey-host .hint{margin:0 auto 12px;max-width:980px;text-align:center;font-size:17px;line-height:1.35;color:#624524}
+.local-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 18px;align-items:start}
+.local-field{padding:10px 12px;background:rgba(255,250,229,.48);border:1px solid rgba(113,74,36,.24);border-radius:8px}
+.local-field.full{grid-column:1/-1}
+.local-field label,.local-field .label{display:block;font-weight:700;margin-bottom:5px;font-size:15px}
+.local-field select,.local-field input[type="number"],.local-field input[type="text"],.local-field textarea{
+ width:100%;box-sizing:border-box;padding:6px 8px;border:1px solid #8a673e;border-radius:6px;background:#fff9e8;color:#2d2117;font:15px Georgia,"Times New Roman",serif
+}
+.local-field textarea{min-height:58px;resize:vertical}
+.checks{display:flex;flex-wrap:wrap;gap:5px 13px;font-size:14px}
+.checks label{display:flex;align-items:center;gap:4px;font-weight:400;margin:0}
+.local-actions{display:flex;gap:12px;justify-content:center;align-items:center;margin:16px 0 4px}
+.local-actions button{padding:10px 24px;border:2px solid #68451e;border-radius:999px;background:#8c642c;color:#fff5da;font:700 16px Georgia,"Times New Roman",serif;cursor:pointer}
+.local-actions button.secondary{background:#c9a568;color:#322214}
+.local-msg{min-height:20px;text-align:center;font-weight:700;color:#496223;margin-top:6px}
+.test-badge{position:sticky;top:-18px;z-index:3;margin:-18px -24px 10px;padding:6px 10px;text-align:center;background:rgba(243,216,140,.88);color:#6b2417;border-bottom:1px solid #9a6d2d;font-weight:700;font-size:14px}
+
+/* V1.00.056 – Auswahlverfahren direkt am Ende der Startumfrage */
+.selection-note{
+  grid-column:1/-1;box-sizing:border-box;margin:4px 0 2px;padding:14px 18px 13px;
+  text-align:center;background:rgba(245,226,182,.72);border:1px solid rgba(128,84,32,.46);
+  border-radius:10px;color:#3d2918;box-shadow:inset 0 0 10px rgba(112,72,30,.07);
+}
+.selection-note h4{margin:0 0 8px;font-size:20px;line-height:1.1}
+.selection-note p{margin:4px 0;font-size:15px;line-height:1.34}
+.selection-note .important-note{margin-top:8px;font-weight:700}
+
+/* V1.00.006 – kompakter Ablauf, größere Startumfrage */
+#reader-round{display:none!important}
+
+#reader-flow{
+  position:absolute;
+  left:300px;
+  top:125px;
+  width:1188px;
+  height:118px;
+  z-index:24;
+  box-sizing:border-box;
+  padding:10px 18px 12px;
+  border-top:1px solid rgba(95,60,27,.38);
+  border-bottom:1px solid rgba(95,60,27,.38);
+  background:rgba(249,232,191,.48);
+  color:#2f2117;
+  font-family:Georgia,"Times New Roman",serif;
+}
+#reader-flow .flow-title{
+  margin:0 0 10px;
+  text-align:center;
+  font-size:22px;
+  font-weight:700;
+}
+#reader-flow .flow-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+#reader-flow .flow-step{
+  flex:1 1 0;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  white-space:nowrap;
+}
+#reader-flow .flow-number{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:31px;
+  height:31px;
+  flex:0 0 31px;
+  border-radius:50%;
+  background:#3c2416;
+  color:#f7e8bf;
+  font-size:18px;
+  font-weight:700;
+}
+#reader-flow .flow-label{
+  font-size:17px;
+  font-weight:700;
+}
+#reader-flow .flow-arrow{
+  flex:0 0 auto;
+  font-size:25px;
+  line-height:1;
+  color:#53331d;
+}
+
+.local-survey-host{
+  position:absolute!important;
+  left:280px!important;
+  top:438px!important;
+  width:1210px!important;
+  height:400px!important;
+  z-index:35!important;
+  box-sizing:border-box!important;
+  padding:8px 16px 12px!important;
+  overflow:auto!important;
+  background:rgba(247,230,189,.94)!important;
+  border:2px solid rgba(112,72,34,.55)!important;
+  border-radius:12px!important;
+  box-shadow:inset 0 0 18px rgba(109,69,24,.12)!important;
+  color:#372516!important;
+  font-family:Georgia,"Times New Roman",serif!important;
+}
+.local-survey-host h3{display:none!important}
+.local-survey-host .hint{
+  margin:3px 0 8px!important;
+  text-align:center!important;
+  font-size:16px!important;
+  line-height:1.2!important;
+  color:#624524!important;
+}
+.local-grid{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:8px 14px!important;
+  align-items:start!important;
+}
+.local-field{
+  padding:7px 9px!important;
+  background:rgba(255,250,229,.54)!important;
+  border:1px solid rgba(113,74,36,.28)!important;
+  border-radius:8px!important;
+}
+.local-grid .local-field:nth-child(3),
+.local-grid .local-field:nth-child(4){
+  grid-column:auto!important;
+}
+.local-grid .local-field:nth-child(7){
+  grid-column:1/-1!important;
+}
+.local-field label,
+.local-field .label{
+  display:block!important;
+  font-weight:700!important;
+  margin-bottom:5px!important;
+  font-size:17px!important;
+}
+.local-field select,
+.local-field input[type="number"],
+.local-field input[type="text"],
+.local-field textarea{
+  width:100%!important;
+  box-sizing:border-box!important;
+  padding:7px 9px!important;
+  border:1px solid #8a673e!important;
+  border-radius:6px!important;
+  background:#fff9e8!important;
+  color:#2d2117!important;
+  font:17px Georgia,"Times New Roman",serif!important;
+}
+.local-field textarea{
+  min-height:44px!important;
+  resize:vertical!important;
+}
+.checks{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:6px 12px!important;
+  font-size:16px!important;
+  line-height:1.15!important;
+}
+.checks label{
+  display:flex!important;
+  align-items:center!important;
+  gap:5px!important;
+  font-weight:400!important;
+  margin:0!important;
+}
+.checks input{
+  width:17px!important;
+  height:17px!important;
+}
+.local-actions{
+  display:flex!important;
+  gap:12px!important;
+  justify-content:center!important;
+  align-items:center!important;
+  margin:9px 0 2px!important;
+}
+.local-actions button{
+  padding:9px 22px!important;
+  border:2px solid #68451e!important;
+  border-radius:999px!important;
+  font:700 17px Georgia,"Times New Roman",serif!important;
+}
+.test-badge{
+  position:sticky!important;
+  top:-8px!important;
+  z-index:3!important;
+  margin:-8px -16px 7px!important;
+  padding:5px 10px!important;
+  text-align:center!important;
+  background:#f3d88c!important;
+  color:#6b2417!important;
+  border-bottom:1px solid #9a6d2d!important;
+  font-weight:700!important;
+  font-size:15px!important;
+}
+
+
+
+/* V1.00.007 – ursprüngliche Ablaufgrafik zurück, passend zugeschnitten */
+#reader-round{
+  display:block!important;
+  position:absolute!important;
+  left:300px!important;
+  top:122px!important;
+  width:1195px!important;
+  height:208px!important;
+  object-fit:cover!important;
+  object-position:top center!important;
+  z-index:22!important;
+  border:0!important;
+  background:transparent!important;
+}
+
+/* Startumfrage weiter nach oben und größer nutzbar */
+.local-survey-host{
+  position:absolute!important;
+  left:285px!important;
+  top:418px!important;
+  width:1200px!important;
+  height:388px!important;
+  z-index:35!important;
+  box-sizing:border-box!important;
+  padding:8px 16px 12px!important;
+  overflow:auto!important;
+  background:rgba(247,230,189,.94)!important;
+  border:2px solid rgba(112,72,34,.55)!important;
+  border-radius:12px!important;
+  box-shadow:inset 0 0 18px rgba(109,69,24,.12)!important;
+}
+.local-survey-host h3{display:none!important}
+.local-survey-host .hint{
+  margin:3px 0 8px!important;
+  text-align:center!important;
+  font-size:16px!important;
+  line-height:1.2!important;
+  color:#624524!important;
+}
+.local-grid{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:8px 14px!important;
+  align-items:start!important;
+}
+.local-field{
+  padding:7px 9px!important;
+  background:rgba(255,250,229,.54)!important;
+  border:1px solid rgba(113,74,36,.28)!important;
+  border-radius:8px!important;
+}
+.local-grid .local-field:nth-child(7){grid-column:1/-1!important}
+.local-field label,.local-field .label{
+  display:block!important;
+  font-weight:700!important;
+  margin-bottom:5px!important;
+  font-size:17px!important;
+}
+.local-field select,
+.local-field input[type="number"],
+.local-field input[type="text"],
+.local-field textarea{
+  width:100%!important;
+  box-sizing:border-box!important;
+  padding:7px 9px!important;
+  border:1px solid #8a673e!important;
+  border-radius:6px!important;
+  background:#fff9e8!important;
+  color:#2d2117!important;
+  font:17px Georgia,"Times New Roman",serif!important;
+}
+.local-field textarea{min-height:44px!important;resize:vertical!important}
+.checks{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:6px 12px!important;
+  font-size:16px!important;
+  line-height:1.15!important;
+}
+.checks label{
+  display:flex!important;
+  align-items:center!important;
+  gap:5px!important;
+  font-weight:400!important;
+  margin:0!important;
+}
+.checks input{width:17px!important;height:17px!important}
+.local-actions{
+  display:flex!important;
+  gap:12px!important;
+  justify-content:center!important;
+  align-items:center!important;
+  margin:9px 0 2px!important;
+}
+.local-actions button{
+  padding:9px 22px!important;
+  border:2px solid #68451e!important;
+  border-radius:999px!important;
+  font:700 17px Georgia,"Times New Roman",serif!important;
+}
+.test-badge{
+  position:sticky!important;
+  top:-8px!important;
+  z-index:3!important;
+  margin:-8px -16px 7px!important;
+  padding:5px 10px!important;
+  text-align:center!important;
+  background:#f3d88c!important;
+  color:#6b2417!important;
+  border-bottom:1px solid #9a6d2d!important;
+  font-weight:700!important;
+  font-size:15px!important;
+}
+
+
+
+/* V1.00.024 – Startumfrage neu zusammengesetzt */
+#welcome-cover{display:none!important;}
+#start-title-cover{
+  display:block!important;
+  position:absolute!important;
+  left:305px!important;
+  top:338px!important;
+  width:1180px!important;
+  height:145px!important;
+  z-index:18!important;
+  pointer-events:none!important;
+  background:radial-gradient(ellipse at 50% 45%,rgba(255,241,204,.99) 0%,rgba(250,229,186,.985) 76%,rgba(245,219,169,.94) 100%)!important;
+  box-shadow:0 0 20px 13px rgba(248,226,181,.74)!important;
+  border-radius:40px!important;
+}
+#reader-round{
+  display:block!important;
+  position:absolute!important;
+  left:351px!important;
+  top:4px!important;
+  width:1090px!important;
+  height:467px!important;
+  z-index:22!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  border:0!important;
+  background:transparent!important;
+  pointer-events:none!important;
+  user-select:none!important;
+  -webkit-user-drag:none!important;
+}
+.local-survey-host{
+  position:absolute!important;
+  left:285px!important;
+  top:468px!important;
+  width:1200px!important;
+  height:367px!important;
+  z-index:35!important;
+  box-sizing:border-box!important;
+  padding:10px 16px 12px!important;
+  overflow:auto!important;
+  background:rgba(247,230,189,.96)!important;
+  border:2px solid rgba(112,72,34,.55)!important;
+  border-radius:12px!important;
+  box-shadow:inset 0 0 18px rgba(109,69,24,.12)!important;
+  color:#372516!important;
+  font-family:Georgia,"Times New Roman",serif!important;
+}
+#survey h3{
+  display:block!important;
+  margin:0 0 7px!important;
+  text-align:center!important;
+  font-size:29px!important;
+  line-height:1.08!important;
+  color:#3c2817!important;
+}
+#survey .test-badge{
+  position:static!important;
+  margin:0 0 7px!important;
+  padding:5px 10px!important;
+  text-align:center!important;
+  background:#f3d88c!important;
+  color:#6b2417!important;
+  border:1px solid #9a6d2d!important;
+  border-radius:6px!important;
+  font-weight:700!important;
+  font-size:15px!important;
+}
+#survey .hint{
+  margin:0 0 9px!important;
+  text-align:center!important;
+  font-size:16px!important;
+  line-height:1.2!important;
+  color:#624524!important;
+}
+
+
+/* V1.00.025 – zweite Seite: nur die Startumfrage */
+#welcome-cover,#start-title-cover,#reader-round,#back-book,#reader-flow{display:none!important;}
+.local-survey-host{
+  position:absolute!important;left:346px!important;top:235px!important;width:1100px!important;height:310px!important;
+  z-index:35!important;box-sizing:border-box!important;padding:18px 24px 16px!important;overflow:hidden!important;
+  background:rgba(247,230,189,.93)!important;border:2px solid rgba(112,72,34,.58)!important;border-radius:14px!important;
+  box-shadow:inset 0 0 20px rgba(109,69,24,.12)!important;color:#372516!important;
+}
+#survey h3{display:block!important;margin:0 0 8px!important;text-align:center!important;font-size:32px!important;line-height:1.08!important;color:#3c2817!important;}
+#survey .test-badge{position:static!important;margin:0 0 8px!important;padding:5px 10px!important;text-align:center!important;background:#f3d88c!important;color:#6b2417!important;border:1px solid #9a6d2d!important;border-radius:6px!important;font-weight:700!important;font-size:15px!important;}
+#survey .hint{margin:0 0 14px!important;text-align:center!important;font-size:17px!important;line-height:1.25!important;color:#624524!important;}
+.local-grid{grid-template-columns:1fr 1fr!important;gap:12px 16px!important;}
+.local-field{padding:12px 14px!important;}
+.local-field label,.local-field .label{font-size:18px!important;}
+.local-field select,.local-field input[type="number"],.local-field input[type="text"],.local-field textarea{font:17px Georgia,"Times New Roman",serif!important;}
+.checks{font-size:16px!important;}
+.local-actions{margin:18px 0 2px!important;}
+
+
+/* V1.00.036 – zweite Seite der Erstleser-Startumfrage: Maße wie Datenschutzerklärung */
+.local-survey-host{
+  position:absolute!important;
+  left:330px!important;
+  top:92px!important;
+  width:1132px!important;
+  height:635px!important;
+  z-index:35!important;
+  box-sizing:border-box!important;
+  padding:18px 22px 18px!important;
+  overflow:auto!important;
+  background:rgba(247,230,189,.93)!important;
+  border:2px solid rgba(112,72,34,.58)!important;
+  border-radius:14px!important;
+  box-shadow:inset 0 0 20px rgba(109,69,24,.12)!important;
+  color:#372516!important;
+}
+#survey h3{display:block!important;margin:0 0 7px!important;text-align:center!important;font-size:31px!important;line-height:1.08!important;color:#3c2817!important;}
+#survey .hint{margin:0 0 10px!important;text-align:center!important;font-size:16px!important;line-height:1.2!important;color:#624524!important;}
+.local-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px 16px!important;align-items:start!important;}
+.local-field{padding:9px 11px!important;}
+.local-field.full{grid-column:1/-1!important;}
+.local-field label,.local-field .label{font-size:16px!important;}
+.local-field select,.local-field input[type="number"],.local-field input[type="text"],.local-field textarea{font:15px Georgia,"Times New Roman",serif!important;}
+.local-field textarea{min-height:58px!important;}
+.checks{font-size:15px!important;gap:5px 13px!important;}
+.local-actions{margin:12px 0 2px!important;}
+
+
+/* V1.00.037 – 10 Prüfpunkte mit Wichtigkeitsreglern */
+.rating-block{grid-column:1/-1;padding:10px 12px 12px;background:rgba(255,250,229,.54);border:1px solid rgba(113,74,36,.28);border-radius:8px}
+.rating-title{font-weight:700;font-size:18px;margin:0 0 8px;color:#3b2818}
+.rating-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px 18px}
+.rating-row{display:grid;grid-template-columns:145px 1fr;align-items:center;gap:10px;padding:5px 8px;border-radius:7px;background:rgba(255,255,255,.24)}
+.rating-name{font-size:15px;font-weight:700;white-space:nowrap}
+.rating-control{min-width:0}
+.rating-control input[type="range"]{width:100%;margin:0;accent-color:#6f4a20;cursor:pointer}
+.rating-labels{display:flex;justify-content:space-between;margin-top:1px;font-size:11px;color:#65482d}
+.rating-labels span:nth-child(2){text-align:center}
+.rating-current{text-align:center;font-size:12px;font-weight:700;color:#4b321d;line-height:1.1;margin-top:1px}
+
+.rating-labels.five{display:grid!important;grid-template-columns:repeat(5,1fr)!important;gap:2px!important;font-size:11px!important}.rating-labels.five span{text-align:center!important;white-space:nowrap}.rating-labels.five span:first-child{text-align:left!important}.rating-labels.five span:last-child{text-align:right!important}
+</style>
+
+<style id="tally-exclusive-styles">
+#survey,#tally-pilot-host,#chapter-survey,#survey-notes-panel,#box,#success{display:none!important}#reader-round,#welcome-cover,#start-title-cover{display:none!important}
+#tally-exclusive-host{position:absolute;left:338px;top:92px;width:1224px;height:720px;z-index:70;box-sizing:border-box;padding:10px 18px 12px;background:rgba(247,230,189,.96);border:2px solid rgba(112,72,34,.58);border-radius:14px;box-shadow:inset 0 0 20px rgba(109,69,24,.12);color:#372516;font-family:Georgia,"Times New Roman",serif;}
+#tally-exclusive-host header{display:flex;justify-content:space-between;align-items:center;min-height:38px;gap:12px;}
+#tally-exclusive-host h2{font:700 25px "Palatino Linotype",Georgia,serif;margin:0;}
+#tally-exclusive-host p{margin:3px 0 8px;font-size:14px;text-align:center;color:#634628;}
+#tally-exclusive-frame{display:block;width:100%;height:590px;border:1px solid rgba(113,74,36,.28);border-radius:8px;background:rgba(255,250,237,.95);}
+#tally-exclusive-frame[hidden]{display:none!important;}
+#tally-exclusive-pending{display:none;text-align:center;padding:65px 30px;font:21px Georgia,serif;line-height:1.5;}
+#tally-exclusive-host[data-pending="true"] #tally-exclusive-pending{display:block;}
+#tally-exclusive-host[data-pending="true"] #tally-exclusive-frame{display:none;}
+#tally-exclusive-actions{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:8px;}
+#tally-exclusive-actions button{padding:7px 20px;border:2px solid #68451e;border-radius:999px;background:#8c642c;color:#fff5da;font:700 15px Georgia,serif;cursor:pointer}
+#tally-exclusive-actions button:focus-visible{outline:3px solid #377196}
+#tally-exclusive-status{font:italic 12px Georgia,serif;color:#58412c;}
+
+/* Restore the confirmed v079 panel typography, spacing and iframe measurements. */
+
+#tally-exclusive-host{position:absolute;left:338px;top:92px;width:1224px;height:720px;z-index:39;box-sizing:border-box;padding:10px 18px 12px;background:rgba(247,230,189,.96);border:2px solid rgba(112,72,34,.58);border-radius:14px;box-shadow:inset 0 0 20px rgba(109,69,24,.12);font-family:Georgia,"Times New Roman",serif;color:#372516;}
+#tally-exclusive-host header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 0 8px;min-height:0;}
+#tally-exclusive-host h2{font:700 26px "Palatino Linotype","Book Antiqua",Garamond,serif;margin:0;letter-spacing:.2px;color:#3b2817;}
+#tally-exclusive-host p{margin:0 0 8px;font:700 15px "Palatino Linotype","Book Antiqua",Garamond,serif;line-height:1.3;text-align:center;color:#6b2417;}
+#tally-exclusive-status{display:none!important;}
+#tally-exclusive-frame{display:block;width:100%;height:590px;border:1px solid rgba(113,74,36,.28);border-radius:8px;background:rgba(255,250,237,.95);transform:none!important;}
+#tally-exclusive-actions{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:8px;}
+#tally-exclusive-actions button{padding:6px 19px;border:2px solid #68451e;border-radius:999px;background:#8c642c;color:#fff5da;font:700 15px "Palatino Linotype","Book Antiqua",Garamond,serif;cursor:pointer;}
+#tally-exclusive-host[data-pending="true"] #tally-exclusive-actions{display:none!important;}
+
+/* V1.00.085: Fortsetzung der Erstleser-Startumfrage; nur im HTML-Test. */
+#tally-exclusive-host{display:none!important;}
+#survey.local-survey-host{
+  display:block!important;
+  position:absolute!important;
+  left:338px!important;
+  top:92px!important;
+  width:1224px!important;
+  height:720px!important;
+  padding:16px 22px 18px!important;
+  overflow:auto!important;
+  z-index:39!important;
+  background:rgba(247,230,189,.96)!important;
+  border:2px solid rgba(112,72,34,.58)!important;
+  border-radius:14px!important;
+  box-shadow:inset 0 0 20px rgba(109,69,24,.12)!important;
+}
+#survey .rating-labels.six{
+  display:flex!important;justify-content:space-between!important;
+  font-size:12px!important;margin-top:3px!important;
+}
+#survey .rating-labels.six span{white-space:nowrap!important}
+#survey .rating-labels.six span:first-child{text-align:left!important}
+#survey .rating-labels.six span:last-child{text-align:right!important}
+
+/* V1.00.086: ausschliesslich Erstleser-Startumfrage Seite 2 – Satisfy normal. */
+#survey.local-survey-host{font-family:"Satisfy","Segoe Print",cursive!important;font-weight:400!important}
+#survey h3{font-family:"Satisfy","Segoe Print",cursive!important;font-size:33px!important;font-weight:400!important}
+#survey .hint{font-family:"Satisfy","Segoe Print",cursive!important;font-size:19px!important;font-weight:400!important}
+#survey .rating-title{font-family:"Satisfy","Segoe Print",cursive!important;font-size:22px!important;font-weight:400!important}
+#survey .rating-name{font-family:"Satisfy","Segoe Print",cursive!important;font-size:19px!important;font-weight:400!important}
+#survey .rating-labels.six{font-family:"Satisfy","Segoe Print",cursive!important;font-size:15px!important;font-weight:400!important}
+#survey .rating-current{font-family:"Satisfy","Segoe Print",cursive!important;font-size:17px!important;font-weight:400!important}
+#survey .local-field label,#survey .local-field .label{font-family:"Satisfy","Segoe Print",cursive!important;font-size:20px!important;font-weight:400!important;line-height:1.25!important}
+#survey .checks{font-family:"Satisfy","Segoe Print",cursive!important;font-size:19px!important;font-weight:400!important}
+#survey .checks label{font-family:"Satisfy","Segoe Print",cursive!important;font-size:19px!important;font-weight:400!important}
+#survey .local-field select,#survey .local-field input[type="number"],#survey .local-field input[type="text"],#survey .local-field textarea{font:400 19px "Satisfy","Segoe Print",cursive!important}
+#survey .selection-note{font-family:"Satisfy","Segoe Print",cursive!important;font-size:18px!important;font-weight:400!important}
+#survey .selection-note h4{font-family:"Satisfy","Segoe Print",cursive!important;font-size:23px!important;font-weight:400!important}
+#survey .selection-note p,#survey .selection-note .important-note{font-family:"Satisfy","Segoe Print",cursive!important;font-size:18px!important;font-weight:400!important}
+#survey .local-actions button{font:400 21px "Satisfy","Segoe Print",cursive!important}
+#survey .local-msg{font-family:"Satisfy","Segoe Print",cursive!important;font-weight:400!important}
+
+
+/* V1.00.087 – invertierte Wichtigkeits-Fuellung, neutraler mittiger Start. */
+#survey .rating-control input.importance-range{
+  -webkit-appearance:none!important;appearance:none!important;
+  display:block!important;box-sizing:border-box!important;
+  width:100%!important;height:9px!important;
+  margin:10px 0 5px!important;
+  border:1px solid #8c765b!important;
+  border-radius:999px!important;
+  background:linear-gradient(to right,#d8e5e9 0%,#d8e5e9 var(--importance-unfilled,100%),#70481f var(--importance-unfilled,100%),#70481f 100%)!important;
+  cursor:pointer!important;
+}
+#survey .rating-control input.importance-range::-webkit-slider-thumb{
+  -webkit-appearance:none!important;appearance:none!important;
+  width:20px!important;height:20px!important;
+  border:2px solid #a87847!important;border-radius:50%!important;
+  background:#70481f!important;
+  box-shadow:0 1px 2px rgba(51,32,18,.3)!important;
+}
+#survey .rating-control input.importance-range::-moz-range-thumb{
+  width:16px!important;height:16px!important;
+  border:2px solid #a87847!important;border-radius:50%!important;
+  background:#70481f!important;
+  box-shadow:0 1px 2px rgba(51,32,18,.3)!important;
+}
+#survey .rating-control input.importance-range:focus-visible{outline:2px solid #356c8e!important;outline-offset:8px!important}
+
+
+/* V1.00.088 – Nur Erstleser-Startumfrage ab Seite 2: alle Felder innerhalb des Pergaments. */
+#survey.local-survey-host{
+  left:330px!important;
+  top:100px!important;
+  width:1150px!important;
+  height:675px!important;
+  max-width:1150px!important;
+  padding:16px 22px 18px!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  scrollbar-gutter:stable!important;
+}
+#survey.local-survey-host,#survey.local-survey-host *{box-sizing:border-box!important}
+#survey.local-survey-host form,
+#survey.local-survey-host .local-grid,
+#survey.local-survey-host .rating-block,
+#survey.local-survey-host .rating-grid,
+#survey.local-survey-host .rating-row,
+#survey.local-survey-host .rating-control,
+#survey.local-survey-host .local-field,
+#survey.local-survey-host .checks,
+#survey.local-survey-host .selection-note,
+#survey.local-survey-host .local-actions{min-width:0!important;max-width:100%!important}
+#survey .local-grid,
+#survey .rating-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+#survey .rating-row{grid-template-columns:145px minmax(0,1fr)!important}
+#survey .local-field select,
+#survey .local-field input[type="text"],
+#survey .local-field input[type="number"],
+#survey .local-field textarea{max-width:100%!important}
+#survey .checks{flex-wrap:wrap!important}
+#survey .local-field .label,
+#survey .local-field label,
+#survey .selection-note,
+#survey .hint{overflow-wrap:break-word!important}
+
+
+/* V1.00.095: Scrollleiste nochmals 8px weiter links, Kante x=1471; restliche Inhalte aus V1.00.094 unveraendert. */
+#survey.local-survey-host{
+  left:330px!important;top:100px!important;
+  width:1132px!important;max-width:1132px!important;height:675px!important;
+  padding:0!important;border:0!important;border-radius:0!important;
+  box-shadow:none!important;background:transparent!important;
+  overflow-x:hidden!important;overflow-y:scroll!important;
+  scrollbar-gutter:stable!important;
+  scrollbar-width:thin!important;scrollbar-color:#94724d rgba(247,230,189,.12)!important;
+}
+#survey.local-survey-host .survey-page2-surface{
+  box-sizing:border-box!important;
+  width:1150px!important;max-width:1150px!important;min-height:675px!important;
+  padding:16px 22px 18px!important;
+  background:rgba(247,230,189,.96)!important;
+  border:2px solid rgba(112,72,34,.58)!important;border-radius:14px!important;
+  box-shadow:inset 0 0 20px rgba(109,69,24,.12)!important;
+}
+
+
+/* V1.00.096: Scrollleiste um 4px nach links (rechte Kante x=1467).
+   Scrollspur oben/unten je 5px kuerzer; Formular und Scrollfenster bleiben 675px hoch. */
+@supports selector(::-webkit-scrollbar){
+  #survey.local-survey-host{
+    scrollbar-width:auto!important;
+    scrollbar-color:auto!important;
+  }
+  #survey.local-survey-host::-webkit-scrollbar{
+    width:16px;
+    background:#d9d9d9;
+  }
+  #survey.local-survey-host::-webkit-scrollbar-track{
+    background:linear-gradient(to right,#ececec 0%,#d8d8d8 45%,#c9c9c9 100%);
+    border-left:1px solid #8e8e8e;
+    border-right:1px solid #f3f3f3;
+    border-radius:2px;
+  }
+  #survey.local-survey-host::-webkit-scrollbar-thumb{
+    background:linear-gradient(to right,#888 0%,#707070 48%,#5f5f5f 100%);
+    border:1px solid #535353;
+    border-radius:8px;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);
+  }
+  #survey.local-survey-host::-webkit-scrollbar-thumb:hover{
+    background:linear-gradient(to right,#949494 0%,#797979 48%,#666 100%);
+  }
+  #survey.local-survey-host::-webkit-scrollbar-button:single-button{
+    display:block;
+    height:16px;
+    background-color:#d7d7d7;
+    background-repeat:no-repeat;
+    background-position:center;
+    background-size:8px 8px;
+    border-left:1px solid #8e8e8e;
+    border-right:1px solid #f3f3f3;
+  }
+  #survey.local-survey-host::-webkit-scrollbar-button:single-button:vertical:decrement{
+    border-top:1px solid #8e8e8e;
+    border-bottom:1px solid #9a9a9a;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><polygon points='5,2 9,7 1,7' fill='%23545454'/></svg>");
+  }
+  #survey.local-survey-host::-webkit-scrollbar-button:single-button:vertical:increment{
+    border-top:1px solid #c8c8c8;
+    border-bottom:1px solid #8e8e8e;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><polygon points='1,3 9,3 5,8' fill='%23545454'/></svg>");
+  }
+  #survey.local-survey-host::-webkit-scrollbar-corner{background:#d7d7d7;}
+}
+
+
+/* V1.00.100 – Zweitleser-Tally-Einbettung als gemeinsame Rahmenvorlage.
+   Nur der Scroll-Rahmen von Erstleser Startumfrage Seite 2 wird vereinheitlicht.
+   Scrollen innerhalb des iframe; Fragen, Logik und Felder bleiben unveraendert. */
+#erstleser-native-survey-panel{
+  position:absolute;left:310px;top:90px;width:1172px;height:695px;z-index:39;
+  box-sizing:border-box;padding:8px 18px;
+  background:rgba(247,230,189,.96);
+  border:2px solid rgba(112,72,34,.58);border-radius:14px;
+  box-shadow:inset 0 0 20px rgba(109,69,24,.12);
+}
+#erstleser-native-survey-frame{
+  position:relative;left:auto;top:auto;width:100%;height:100%;
+  box-sizing:border-box;z-index:1;display:block;
+  border:1px solid rgba(113,74,36,.28);border-radius:8px;
+  background:rgba(255,250,237,.95);transform:none!important;
+}
+</style>
+<style id="tally-final-v142">
+/* Einzige sichtbare Umfrage im geschuetzten Onlinebetrieb: Tally. */
+#tally-exclusive-host {display:flex!important;flex-direction:column!important;}
+#tally-exclusive-frame {display:block!important;flex:1 1 auto!important;height:auto!important;min-height:0!important;}
+#tally-exclusive-actions {flex:0 0 auto!important;}
+#tally-exclusive-host[data-pending="false"] #tally-exclusive-pending {display:none!important;}
+#survey,#erstleser-native-survey-panel {display:none!important;}
+</style>
+<style id="hx-tally-zoom-v158">
+/* Nur die bestehende Tally-Einbettung: native Zoom-Rasterung statt Bildskalierung.
+   Alle Buchrahmen, Grafiken, Positionen, Abstaende und Seitenelemente bleiben gleich.
+   Responsive Darstellung ist vor Deployment noch visuell zu pruefen. */
+#tally-exclusive-host:not([data-pending="true"]) #tally-exclusive-frame,
+#tally-pilot-host:not([hidden]) #tally-pilot-frame {
+  transform:none!important;transform-origin:top left!important;zoom:1.9!important;
+  width:52.631579%!important;height:310px!important;min-height:0!important;
+  flex:0 0 auto!important;align-self:flex-start!important;
+}
+</style>
+<style id="hx-oleo-v155">
+/* V1.00.155 – einheitliche Schrift, lokal beim Build eingebunden. */
+@font-face{font-family:"Oleo Script Swash Caps";font-style:normal;font-weight:400;font-display:swap;src:url("/fonts/oleo-script-swash-caps-latin-400-normal.woff2") format("woff2")}
+@font-face{font-family:"Oleo Script Swash Caps";font-style:normal;font-weight:700;font-display:swap;src:url("/fonts/oleo-script-swash-caps-latin-700-normal.woff2") format("woff2")}
+/* Die vorhandenen Größen von Schaltflächen, Formularlabels und Infotexten bleiben erhalten.
+   Nur die Schriftfamilie wird überall einheitlich ersetzt. */
+:root body :is(#hx-oleo-all-text, *){font-family:"Oleo Script Swash Caps",Georgia,serif!important}
+</style>
+<style id="hx-font-layout-v172">
+/* Nur vorhandene Felder der zweitseitigen Startumfrage; Position und Eingabelogik unverändert. */
+html body #survey.local-survey-host,html body #survey.local-survey-host *,
+html body #erstleser-native-survey-panel,html body #erstleser-native-survey-panel *{font-family:"Oleo Script Swash Caps",Georgia,serif!important;}
+</style>
+</head>
+<body>
+<div id="viewport">
+<div id="stage"><section id="tally-exclusive-host" aria-label="Tally-Umfrage" data-pending="false"><header><h2 id="tally-exclusive-title"></h2><span id="tally-exclusive-status">Tally · 100 % · ohne Skalierung</span></header><p>Deine Antworten werden bei der Abgabe direkt in Tally gespeichert.</p><iframe id="tally-exclusive-frame" title="Tally-Umfrage" referrerpolicy="strict-origin-when-cross-origin"></iframe><div id="tally-exclusive-pending">Dieses Tally-Formular ist noch ein Entwurf. Es muss in Tally veröffentlicht werden, bevor Leser es ausfüllen können.<p>Die bisherige Umfrage ist in dieser Testfassung absichtlich nicht sichtbar.</p></div><div id="tally-exclusive-actions"><button type="button" id="tally-exclusive-next">Nach dem Absenden weiter</button></div></section>
+<img alt="Erstleser Startumfrage" id="background" src="assets/originalgrafik_049.webp"/>
+<div id="welcome-cover" aria-hidden="true"></div>
+<div id="start-title-cover" aria-hidden="true"></div>
+<img alt="So funktioniert die Leserunde" id="reader-round" src="assets/originalgrafik_051.webp"/>
+<a aria-label="Zurück zur Startseite" href="#" id="back-book" title="Zurück zur Startseite"><img alt="Zurück zur Startseite" src="assets/originalgrafik_052.webp"/></a>
+<div id="erstleser-native-survey-panel"><iframe id="erstleser-native-survey-frame" title="Erstleser – Startumfrage Seite 2" scrolling="auto"></iframe></div>
+<div class="local-survey-host" id="survey"><div class="survey-page2-surface"><h3>Die Startumfrage – Seite 2</h3><p class="hint">Wie wichtig sind dir die zehn Prüfpunkte? Bewerte von 1 (sehr wichtig) bis 6 (unwichtig).</p><form autocomplete="off" id="local-start-form"><div class="local-grid"><div class="rating-block"><div class="rating-title">4. Wie wichtig sind dir diese 10 Prüfpunkte?</div><div class="rating-grid"><div class="rating-row"><div class="rating-name">Handlung</div><div class="rating-control"><input class="importance-range" type="range" min="1" max="6" step="0.5" value="3.5" name="importance_handlung" aria-label="Wichtigkeit Handlung"><div class="rating-labels six"><span>1 – Sehr wichtig</span><span>6 – Unwichtig</span></div><div class="rating-current">Noch nicht bewertet</div></div></div><div class="rating-row"><div class="rating-name">Dramaturgie</div><div class="rating-control"><input class="importance-range" type="range" min="1" max="6" step="0.5" value="3.5" name="importance_dramaturgie" aria-label="Wichtigkeit Dramaturgie"><div class="rating-labels six"><span>1 – Sehr wichtig</span><span>6 – Unwichtig</span></div><div class="rating-current">Noch nicht bewertet</div></div></div><div class="rating-row"><div class="rating-name">Figuren</div><div class="rating-control"><input class="importance-range" type="range" min="1" max="6" step="0.5" value="3.5" name="importance_figuren" aria-label="Wichtigkeit Figuren"><div class="rating-labels six"><span>1 – Sehr wichtig</span><span>6 – Unwichtig</span></div><div class="rating-current">Noch nicht bewertet</div></div></div><div class="rating-row"><div class="rating-name">Welt &amp; Lore</div><div class="rating-control"><input class="importance-range" type="range" min="1" max="6" step="0.5" value="3.5" name="importance_welt_lore" aria-label="Wichtigkeit Welt und Lore"><div class="rating-labels six"><span>1 – Sehr wichtig</span><span>6 – Unwichtig</span></div><div class="rating-current">Noch nicht bewertet</div></div></div><div class="rating-row"><div class="rating-name">Chronologie</div><div class="rating-control"><input class="importance-range" type="range" min="1" max="6" step="0.5" value="3.5" name="importance_chronologie" aria-label="Wichtigkeit Chronologie"><div class="rating-labels six"><span>1 – Sehr wichtig</span><span>6 – Unwichtig</span></div><div class="rating-current">Noch nicht bewertet</div></div></div><div class="rating-row"><div class="rating-name">Tagesablauf</div><div class="rating-control"><input class="importance-range" type="range" min="1" max="6" step="0.5" value="3.5" name="importance_tagesablauf" aria-label="Wichtigkeit Tagesablauf"><div class="rating-labels six"><span>1 – Sehr wichtig</span><span>6 – Unwichtig</span></div><div class="rating-current">Noch nicht bewertet</div></div></div><div class="rating-row"><div class="rating-name">Emotionen</div><div class="rating-control"><input class="importance-range" type="range" min="1" max="6" step="0.5" value="3.5" name="importance_emotionen" aria-label="Wichtigkeit Emotionen"><div class="rating-labels six"><span>1 – Sehr wichtig</span><span>6 – Unwichtig</span></div><div class="rating-current">Noch nicht bewertet</div></div></div><div class="rating-row"><div class="rating-name">Infodoppelungen</div><div class="rating-control"><input class="importance-range" type="range" min="1" max="6" step="0.5" value="3.5" name="importance_infodoppelungen" aria-label="Wichtigkeit Infodoppelungen"><div class="rating-labels six"><span>1 – Sehr wichtig</span><span>6 – Unwichtig</span></div><div class="rating-current">Noch nicht bewertet</div></div></div><div class="rating-row"><div class="rating-name">Stil &amp; Lesefluss</div><div class="rating-control"><input class="importance-range" type="range" min="1" max="6" step="0.5" value="3.5" name="importance_stil_lesefluss" aria-label="Wichtigkeit Stil und Lesefluss"><div class="rating-labels six"><span>1 – Sehr wichtig</span><span>6 – Unwichtig</span></div><div class="rating-current">Noch nicht bewertet</div></div></div><div class="rating-row"><div class="rating-name">Verständlichkeit</div><div class="rating-control"><input class="importance-range" type="range" min="1" max="6" step="0.5" value="3.5" name="importance_verstaendlichkeit" aria-label="Wichtigkeit Verständlichkeit"><div class="rating-labels six"><span>1 – Sehr wichtig</span><span>6 – Unwichtig</span></div><div class="rating-current">Noch nicht bewertet</div></div></div></div></div><div class="local-field full"><div class="label">5. Was ist dir in einer Geschichte besonders wichtig?</div><div class="checks"><label><input name="important" type="checkbox" value="Spannende Handlung"/>Spannende Handlung</label><label><input name="important" type="checkbox" value="Interessante Figuren"/>Interessante Figuren</label><label><input name="important" type="checkbox" value="Fantastische Welten"/>Fantastische Welten</label><label><input name="important" type="checkbox" value="Realistische Themen"/>Realistische Themen</label><label><input name="important" type="checkbox" value="Humor"/>Humor</label><label><input name="important" type="checkbox" value="Überraschende Wendungen"/>Überraschende Wendungen</label><label><input name="important" type="checkbox" value="Tiefgründige Themen"/>Tiefgründige Themen</label><label><input name="important" type="checkbox" value="Sonstiges"/>Sonstiges</label></div></div><div class="local-field"><div class="label">6. Ähnliche Bücher gelesen?</div><textarea name="similar" placeholder="Optional"></textarea></div><div class="local-field"><div class="label">7. Was erwartest du von der Geschichte?</div><textarea name="expect"></textarea></div><div class="local-field full"><div class="label">8. Wünsche oder Dinge, die du nicht so gerne magst?</div><textarea name="wishes" placeholder="Optional"></textarea></div></div><div class="selection-note" aria-label="Auswahlverfahren der Erstleserrunde">
+<h4>So läuft die Erstleserrunde ab</h4>
+<p><strong>Prolog und Kapitel 1</strong> stehen zunächst allen Erstlesern zur Verfügung.</p>
+<p>Danach entscheidet der Autor anhand der Qualität, Genauigkeit und Nützlichkeit der Rückmeldungen individuell, wer weitere Kapitel lesen darf. <strong>Eine feste Höchstzahl an Lesern gibt es nicht.</strong></p>
+<p>Auch nach <strong>Kapitel 6</strong> bleibt die Freischaltung flexibel. Gute Rückmeldungen können zum Weiterlesen bis zum Ende von Band 1 führen. Die Rangliste dient dem Autor als Entscheidungshilfe, nicht als automatische Zugangssperre.</p>
+<p class="important-note">Wichtig: Es geht nicht darum, möglichst positiv zu bewerten. Ehrliche Kritik, konkrete Beobachtungen und nachvollziehbare Begründungen sind ausdrücklich erwünscht.</p>
+</div><div class="local-actions"><button type="submit">Startumfrage speichern &amp; weiter</button></div><div class="local-msg" id="local-msg"></div></form></div></div>
+</div>
+</div>
+<script>
+/* V1.00.099: original form and all its input nodes are adopted into an
+   embedded same-origin document. This is the same iframe scrolling mechanism
+   as Tally (no scrollbar CSS, no replacement of survey questions). */
+const firstSurveyFrame = document.getElementById('erstleser-native-survey-frame');
+const originalSurvey = document.getElementById('survey');
+const surveyDoc = firstSurveyFrame.contentDocument;
+const allSurveyCss = Array.from(document.head.querySelectorAll('style')).map(st => st.textContent).join('\n');
+surveyDoc.open();
+surveyDoc.write('<!doctype html><html lang="de"><head><meta charset="utf-8"></head><body></body></html>');
+surveyDoc.close();
+const surveyStyle = surveyDoc.createElement('style');
+surveyStyle.textContent = allSurveyCss + `
+  html,body{margin:0!important;padding:0!important;width:100%!important;
+    height:auto!important;min-height:100%!important;overflow-x:hidden!important;
+    background:transparent!important;}
+  html{overflow-y:auto!important;scrollbar-width:thin!important;
+    scrollbar-color:auto!important;}
+  body{overflow-y:visible!important;}
+  #survey.local-survey-host{display:block!important;position:relative!important;
+    inset:auto!important;left:0!important;top:0!important;
+    width:100%!important;max-width:100%!important;height:auto!important;
+    min-height:675px!important;box-sizing:border-box!important;
+    padding:0!important;overflow:visible!important;
+    border:0!important;border-radius:0!important;
+    box-shadow:none!important;background:transparent!important;
+    scrollbar-width:auto!important;scrollbar-color:auto!important;}
+  #survey.local-survey-host .survey-page2-surface{
+    box-sizing:border-box!important;width:100%!important;max-width:100%!important;
+    min-height:675px!important;}
+`;
+surveyDoc.head.appendChild(surveyStyle);
+Array.from(document.head.querySelectorAll('link[rel="stylesheet"]')).forEach(originalLink=>{
+  const link = surveyDoc.createElement('link');link.rel='stylesheet';link.href=originalLink.href;
+  surveyDoc.head.appendChild(link);
+});
+surveyDoc.body.appendChild(surveyDoc.adoptNode(originalSurvey));
+
+function fitStage(){const s=Math.min(window.innerWidth/1792,window.innerHeight/854);document.getElementById('stage').style.transform='translate(-50%,-50%) scale('+s+')';}
+window.addEventListener('resize',fitStage);fitStage();
+const VERSION="V1.00.056";
+function ensureReaderId(){let id=localStorage.getItem('hexavelionReaderId');if(!id){id='R-'+(window.crypto&&crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+'-'+Math.random().toString(36).slice(2));localStorage.setItem('hexavelionReaderId',id);}return id;}
+function saveSubmission(rec){const k='hexavelionSurveySubmissionsV1';let arr=[];try{arr=JSON.parse(localStorage.getItem(k)||'[]');if(!Array.isArray(arr))arr=[];}catch(_){arr=[];}rec.id='S-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);rec.timestamp=new Date().toISOString();rec.version=VERSION;rec.readerId=ensureReaderId();arr.push(rec);localStorage.setItem(k,JSON.stringify(arr));return rec;}
+function values(form,name){return [...form.querySelectorAll('[name="'+name+'"]:checked')].map(x=>x.value);}
+
+const MODE="first";const form=surveyDoc.getElementById('local-start-form');
+const importanceText={1:'Sehr wichtig',2:'Wichtig',3:'Eher wichtig',4:'Eher unwichtig',5:'Wenig wichtig',6:'Unwichtig'};
+surveyDoc.querySelectorAll('.importance-range').forEach(r=>{
+  const out=r.parentElement.querySelector('.rating-current');
+  const sync=()=>{
+    const touched=r.dataset.touched==='true';
+    out.textContent=touched?(importanceText[r.value]||''):'Noch nicht bewertet';
+    /* The brown section grows from the right towards the left as importance increases. */
+    const pale= touched ? ((Number(r.value)-1)/5)*100 : 100;
+    r.style.setProperty('--importance-unfilled',pale.toFixed(2)+'%');
+  };
+  r.addEventListener('input',()=>{
+    const value=Math.max(1,Math.min(6,Math.round(Number(r.value))));
+    r.setAttribute('step','1');
+    r.value=String(value);
+    r.dataset.touched='true';
+    sync();
+  });
+  sync();
+});
+form.addEventListener('submit',e=>{e.preventDefault();const fd=new FormData(form);const answers=Object.fromEntries(fd.entries());answers.important=values(form,'important');surveyDoc.querySelectorAll('.importance-range').forEach(r=>{if(r.dataset.touched==='true')answers[r.name]=importanceText[r.value]||'';else delete answers[r.name];});let step1={};try{if(window.parent&&window.parent!==window&&typeof window.parent.getReaderStartStep1==='function')step1=window.parent.getReaderStartStep1()||{};}catch(_){}if(!step1||(!step1.gender&&!step1.age)){try{step1=JSON.parse(localStorage.getItem('erstleserStartStep1')||'{}');}catch(_){step1={};}}const merged=Object.assign({},step1,answers);try{saveSubmission({formType:'start',readerRound:'erstleser',answers:merged});localStorage.removeItem('erstleserStartStep1');localStorage.setItem('erstleserStartComplete','true');localStorage.setItem('activeReaderMode','first');}catch(_){}surveyDoc.getElementById('local-msg').textContent='Startumfrage gespeichert.';setTimeout(()=>{if(window.parent&&window.parent!==window&&typeof window.parent.showProlog==='function')window.parent.showProlog();},220);});
+surveyDoc.getElementById('skip-start')?.addEventListener('click',()=>{localStorage.setItem('activeReaderMode',MODE);if(window.parent&&window.parent!==window&&typeof window.parent.showProlog==='function')window.parent.showProlog();});
+const back=document.getElementById('back-book');if(back)back.addEventListener('click',e=>{e.preventDefault();if(window.parent&&typeof window.parent.showStart==='function')window.parent.showStart();});
+</script>
+<script id="tally-exclusive-runtime">
+(function(){
+ 'use strict';
+ const formId='Gx2Y7Z';
+ const frame=document.getElementById('tally-exclusive-frame');
+ const title=document.getElementById('tally-exclusive-title');
+ const next=document.getElementById('tally-exclusive-next');
+ const host=document.getElementById('tally-exclusive-host');
+ if(!frame||!title||!next||!host)return;
+ title.textContent='Erstleser · Startumfrage';
+ host.dataset.pending='false';
+ // Original Tally form, without hidden proof fields. GitHub Pages has no identity signing key.
+ const params=new URLSearchParams({alignLeft:'1',hideTitle:'1',transparentBackground:'1',
+   version:'V1.00.334-GITHUB-VORSCHAU-UNBESTAETIGT'});
+ frame.src='https://tally.so/embed/'+formId+'?'+params.toString();
+ next.textContent='Zur Leseansicht (nur Vorschau)';
+ next.setAttribute('title','Diese Vorschau kann keine Tally-Einreichung verifizieren.');
+ next.addEventListener('click',function(){
+   if(window.parent&&window.parent!==window&&typeof window.parent.showPlaceholder==='function')
+     window.parent.showPlaceholder();
+ });
+})();
+</script></body>
+</html>
