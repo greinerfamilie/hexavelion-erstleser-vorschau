@@ -72,6 +72,15 @@ html body #info-panel,html body #info-panel *{font-family:"Oleo Script Swash Cap
 #start-fields .start-checks{flex-wrap:wrap;gap:2px 10px;min-width:0;max-width:100%;align-content:flex-start;}
 #start-fields .start-checks label{font-family:"Oleo Script Swash Caps",Georgia,serif!important;font-size:18px!important;line-height:1.05!important;white-space:nowrap;}
 #start-fields .start-checks input{flex:0 0 auto;}
+/* V334.2 GitHub-Vorschau: ehemalige lokale Fragen bleiben im Originalquelltext erhalten,
+   sind aber nicht mehr sichtbar oder auswählbar. Verbindliches Formular ist Tally. */
+#info-panel{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;}
+#info-panel #start-form{display:none!important;}
+#info-panel .lead{max-width:1030px;line-height:1.25!important;}
+#tally-forward{min-height:48px;padding:7px 28px;border:2px solid #77501f;border-radius:999px;
+background:linear-gradient(#48732e,#244b20);color:#fff2ce;
+font:400 23px "Oleo Script Swash Caps",Georgia,serif!important;cursor:pointer;}
+#tally-forward:hover,#tally-forward:focus-visible{filter:brightness(1.12);outline:2px solid #77501f;outline-offset:2px;}
 </style>
 </head>
 <body>
@@ -81,7 +90,8 @@ html body #info-panel,html body #info-panel *{font-family:"Oleo Script Swash Cap
 <img id="reader-flow" src="originalgrafik_050.webp" alt="So läuft die Leserunde ab">
 <section id="info-panel" aria-label="Startumfrage">
 <h2>Die Startumfrage</h2>
-<p class="lead">Auf der ersten Seite möchten wir zunächst drei Dinge über dich wissen.</p>
+<p class="lead">Alle Fragen beantwortest du direkt in der echten Tally-Startumfrage. Nur dort werden die Antworten gespeichert.</p>
+<button id="tally-forward" type="button">Zur Startumfrage in Tally</button>
 <form id="start-form" autocomplete="off">
 <div id="start-fields">
 <div class="start-field inline"><label for="intro-gender">1. Geschlecht</label><select id="intro-gender" name="gender"><option value="">Keine Angabe</option><option>Männlich</option><option>Weiblich</option><option>Divers</option></select></div>
@@ -101,7 +111,13 @@ function ensureReaderId(){let id=localStorage.getItem('hexavelionReaderId');if(!
 function saveSubmission(rec){const k='hexavelionSurveySubmissionsV1';let arr=[];try{arr=JSON.parse(localStorage.getItem(k)||'[]');if(!Array.isArray(arr))arr=[];}catch(_){arr=[];}rec.id='S-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);rec.timestamp=new Date().toISOString();rec.version=VERSION;rec.readerId=ensureReaderId();arr.push(rec);localStorage.setItem(k,JSON.stringify(arr));return rec;}
 function goProlog(){try{localStorage.setItem('activeReaderMode','first');}catch(_){} if(window.parent&&window.parent!==window&&typeof window.parent.showProlog==='function')window.parent.showProlog();}
 document.getElementById('start-form').addEventListener('submit',function(e){e.preventDefault();const gender=document.getElementById('intro-gender').value;const age=document.getElementById('intro-age').value;const genres=[...document.querySelectorAll('#start-form [name="genres"]:checked')].map(x=>x.value);const step1={gender,age,genres};try{localStorage.setItem('erstleserStartStep1',JSON.stringify(step1));}catch(_){}document.getElementById('start-message').textContent='Erste Seite gespeichert.';setTimeout(()=>{try{if(window.parent&&window.parent!==window&&typeof window.parent.showReaderSurveyForm==='function'){window.parent.showReaderSurveyForm(step1);return;}}catch(_){}},120);});
-document.getElementById('start-skip').addEventListener('click',goProlog);
+document.getElementById('start-skip')?.addEventListener('click',goProlog);
+document.getElementById('tally-forward').addEventListener('click',function(){
+  if(window.parent&&window.parent!==window&&typeof window.parent.showReaderSurveyForm==='function'){
+    window.parent.showReaderSurveyForm();return;
+  }
+  window.location.href='startumfrage-originalansicht-mit-tally.html';
+});
 </script>
 </body>
 </html>
