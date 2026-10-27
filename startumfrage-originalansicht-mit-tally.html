@@ -4,6 +4,8 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
+<!-- Vorschau: Schrift für den Rahmen um das echte Tally-Formular. Tally selbst steuert seine eigenen Felder. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oleo+Script+Swash+Caps:wght@400;700&amp;display=swap"/>
 <title>07 Erstleser – Startumfrage</title>
 <style>
 *{box-sizing:border-box}
@@ -773,9 +775,7 @@ textarea{resize:none}
 }
 </style>
 <style id="hx-oleo-v155">
-/* V1.00.155 – einheitliche Schrift, lokal beim Build eingebunden. */
-@font-face{font-family:"Oleo Script Swash Caps";font-style:normal;font-weight:400;font-display:swap;src:url("/fonts/oleo-script-swash-caps-latin-400-normal.woff2") format("woff2")}
-@font-face{font-family:"Oleo Script Swash Caps";font-style:normal;font-weight:700;font-display:swap;src:url("/fonts/oleo-script-swash-caps-latin-700-normal.woff2") format("woff2")}
+/* Nur in dieser isolierten GitHub-Vorschau wird die Schrift über das Stylesheet geladen; auf Netlify bleibt die lokale Font-Bereitstellung unverändert. */
 /* Die vorhandenen Größen von Schaltflächen, Formularlabels und Infotexten bleiben erhalten.
    Nur die Schriftfamilie wird überall einheitlich ersetzt. */
 :root body :is(#hx-oleo-all-text, *){font-family:"Oleo Script Swash Caps",Georgia,serif!important}
@@ -784,6 +784,12 @@ textarea{resize:none}
 /* Nur vorhandene Felder der zweitseitigen Startumfrage; Position und Eingabelogik unverändert. */
 html body #survey.local-survey-host,html body #survey.local-survey-host *,
 html body #erstleser-native-survey-panel,html body #erstleser-native-survey-panel *{font-family:"Oleo Script Swash Caps",Georgia,serif!important;}
+/* V334.2: Auch der äußere Rahmen des echten Tally-Formulars nutzt die Buchschrift.
+   Der Formularinhalt bleibt bei Tally, dessen Schrift bereits auf Oleo eingestellt ist. */
+#tally-exclusive-host,#tally-exclusive-host h2,#tally-exclusive-host p,
+#tally-exclusive-host button,#tally-exclusive-host #tally-exclusive-status{
+  font-family:"Oleo Script Swash Caps",Georgia,serif!important;
+}
 </style>
 </head>
 <body>
